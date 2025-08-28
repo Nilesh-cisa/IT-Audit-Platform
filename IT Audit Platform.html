@@ -1,0 +1,1560 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IT Audit Management Platform v4.1</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
+
+        .platform-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-section {
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .main-layout {
+            display: flex;
+            min-height: 700px;
+        }
+
+        .nav-sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            border-right: 2px solid #dee2e6;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-menu-item {
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 20px 25px;
+            color: #2c3e50;
+            text-decoration: none;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: linear-gradient(135deg, #3498db, #5dade2);
+            color: white;
+        }
+
+        .content-section {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #3498db, #5dade2);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 15px;
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .field-input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .action-button {
+            display: inline-block;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #5dade2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #58d68d);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #f7dc6f);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #ec7063);
+            color: white;
+        }
+
+        .table-container {
+            margin-top: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .progress-container {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #27ae60, #58d68d);
+        }
+
+        .assessment-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+            outline: none;
+            margin: 15px 0;
+        }
+
+        .assessment-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+        }
+
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-form h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 25px 0;
+        }
+
+        .file-upload-zone {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9ff;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        .file-upload-zone:hover {
+            background: #e8f0fe;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #27ae60, #58d68d);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #ec7063);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, #f39c12, #f7dc6f);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .badge.success {
+            background: #27ae60;
+        }
+
+        .badge.warning {
+            background: #f39c12;
+        }
+
+        .badge.danger {
+            background: #e74c3c;
+        }
+
+        .badge.info {
+            background: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-form">
+            <i class="bi bi-shield-check" style="font-size: 3rem; color: #3498db; margin-bottom: 20px;"></i>
+            <h2>IT Audit Management Platform v4.1</h2>
+            <form id="loginForm">
+                <div class="form-field">
+                    <label class="field-label">Username</label>
+                    <input type="text" id="username" class="field-input" placeholder="Enter username" value="admin" required>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">Password</label>
+                    <input type="password" id="password" class="field-input" placeholder="Enter password" value="admin123" required>
+                </div>
+                <button type="submit" class="action-button btn-primary" style="width: 100%; margin-top: 20px;">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+            </form>
+            <div style="margin-top: 20px; font-size: 0.9rem; color: #7f8c8d;">
+                Default credentials: admin / admin123
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="platform-container hidden">
+        <!-- Header -->
+        <header class="header-section">
+            <div class="brand-section">
+                <i class="bi bi-shield-check" style="margin-right: 15px;"></i>
+                IT Audit Management Platform v4.1
+            </div>
+            <div class="user-section">
+                <span id="currentUser">Admin User</span>
+                <button class="action-button btn-danger" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Navigation Sidebar -->
+            <nav class="nav-sidebar">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item">
+                        <button class="nav-link active" onclick="showSection('dashboard')">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </button>
+                    </li>
+                    <li class="nav-menu-item">
+                        <button class="nav-link" onclick="showSection('frameworks')">
+                            <i class="bi bi-file-earmark-spreadsheet"></i> Import Framework
+                        </button>
+                    </li>
+                    <li class="nav-menu-item">
+                        <button class="nav-link" onclick="showSection('audits')">
+                            <i class="bi bi-clipboard-check"></i> Create Audit
+                        </button>
+                    </li>
+                    <li class="nav-menu-item">
+                        <button class="nav-link" onclick="showSection('assessments')">
+                            <i class="bi bi-sliders"></i> Assessments
+                        </button>
+                    </li>
+                    <li class="nav-menu-item">
+                        <button class="nav-link" onclick="showSection('evidence')">
+                            <i class="bi bi-folder2-open"></i> Evidence
+                        </button>
+                    </li>
+                    <li class="nav-menu-item">
+                        <button class="nav-link" onclick="showSection('reports')">
+                            <i class="bi bi-file-earmark-pdf"></i> Reports
+                        </button>
+                    </li>
+                    <li class="nav-menu-item">
+                        <button class="nav-link" onclick="showSection('users')">
+                            <i class="bi bi-people"></i> User Management
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Content Area -->
+            <main class="content-section">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-view">
+                    <h1 class="card-header">
+                        <i class="bi bi-speedometer2"></i> Dashboard Overview
+                    </h1>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 id="totalAudits">12</h3>
+                            <p>Total Audits</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="activeAudits">5</h3>
+                            <p>Active Audits</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="completedControls">847</h3>
+                            <p>Completed Controls</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="complianceScore">87%</h3>
+                            <p>Overall Compliance</p>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="content-card">
+                        <h3 class="card-header">Recent Audit Activities</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Audit Name</th>
+                                        <th>Framework</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        <th>Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentActivities">
+                                    <tr>
+                                        <td>ISO 27001 Security Assessment</td>
+                                        <td>ISO 27001</td>
+                                        <td><span class="badge success">Active</span></td>
+                                        <td>
+                                            <div class="progress-container">
+                                                <div class="progress-bar" style="width: 75%;"></div>
+                                            </div>
+                                            75%
+                                        </td>
+                                        <td>2024-12-15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SOC 2 Type II Audit</td>
+                                        <td>SOC 2</td>
+                                        <td><span class="badge warning">In Progress</span></td>
+                                        <td>
+                                            <div class="progress-container">
+                                                <div class="progress-bar" style="width: 45%;"></div>
+                                            </div>
+                                            45%
+                                        </td>
+                                        <td>2024-11-30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>NIST Cybersecurity Framework</td>
+                                        <td>NIST CSF</td>
+                                        <td><span class="badge info">Planning</span></td>
+                                        <td>
+                                            <div class="progress-container">
+                                                <div class="progress-bar" style="width: 15%;"></div>
+                                            </div>
+                                            15%
+                                        </td>
+                                        <td>2024-12-31</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Chart -->
+                    <div class="content-card">
+                        <h3 class="card-header">Compliance Overview</h3>
+                        <div class="chart-container">
+                            <canvas id="complianceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Framework Import Section -->
+                <div id="frameworks-section" class="content-view hidden">
+                    <h1 class="card-header">
+                        <i class="bi bi-file-earmark-spreadsheet"></i> Import Compliance Framework
+                    </h1>
+
+                    <div class="content-card">
+                        <h3 class="card-header">Framework Upload</h3>
+                        <p>Upload compliance framework files in CSV, Excel, or JSON format. Supported frameworks include ISO 27001, SOC 2, COBIT, NIST CSF, and custom frameworks.</p>
+                        
+                        <div class="file-upload-zone" onclick="document.getElementById('frameworkFile').click()">
+                            <i class="bi bi-cloud-upload" style="font-size: 3rem; color: #3498db; margin-bottom: 15px;"></i>
+                            <h4>Drop files here or click to browse</h4>
+                            <p>Supported formats: CSV, XLSX, XLS, JSON</p>
+                            <input type="file" id="frameworkFile" style="display: none;" accept=".csv,.xlsx,.xls,.json" onchange="handleFrameworkUpload(this)">
+                        </div>
+
+                        <div class="form-container">
+                            <div class="form-field">
+                                <label class="field-label">Framework Type</label>
+                                <select class="field-input" id="frameworkType">
+                                    <option value="iso27001">ISO 27001:2013</option>
+                                    <option value="soc2">SOC 2 Type II</option>
+                                    <option value="cobit">COBIT 2019</option>
+                                    <option value="nist">NIST Cybersecurity Framework</option>
+                                    <option value="custom">Custom Framework</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label">Framework Name</label>
+                                <input type="text" class="field-input" id="frameworkName" placeholder="Enter framework name">
+                            </div>
+                        </div>
+
+                        <button class="action-button btn-primary" onclick="processFramework()">
+                            <i class="bi bi-upload"></i> Process Framework
+                        </button>
+                        <button class="action-button btn-success" onclick="downloadSampleFramework()">
+                            <i class="bi bi-download"></i> Download Sample
+                        </button>
+                    </div>
+
+                    <!-- Imported Frameworks -->
+                    <div class="content-card">
+                        <h3 class="card-header">Available Frameworks</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Framework Name</th>
+                                        <th>Type</th>
+                                        <th>Controls</th>
+                                        <th>Import Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="frameworksList">
+                                    <tr>
+                                        <td>ISO 27001:2013 Security Controls</td>
+                                        <td><span class="badge info">ISO 27001</span></td>
+                                        <td>114</td>
+                                        <td>2024-01-15</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">View</button>
+                                            <button class="action-button btn-danger" style="padding: 6px 12px;">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>SOC 2 Type II Trust Services</td>
+                                        <td><span class="badge success">SOC 2</span></td>
+                                        <td>87</td>
+                                        <td>2024-01-20</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">View</button>
+                                            <button class="action-button btn-danger" style="padding: 6px 12px;">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Creation Section -->
+                <div id="audits-section" class="content-view hidden">
+                    <h1 class="card-header">
+                        <i class="bi bi-clipboard-check"></i> Create New Audit
+                    </h1>
+
+                    <div class="content-card">
+                        <h3 class="card-header">Audit Details</h3>
+                        <form id="auditForm">
+                            <div class="form-container">
+                                <div class="form-field">
+                                    <label class="field-label">Audit Name</label>
+                                    <input type="text" class="field-input" id="auditName" placeholder="Enter audit name" required>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Framework</label>
+                                    <select class="field-input" id="auditFramework" required>
+                                        <option value="">Select Framework</option>
+                                        <option value="iso27001">ISO 27001:2013</option>
+                                        <option value="soc2">SOC 2 Type II</option>
+                                        <option value="cobit">COBIT 2019</option>
+                                        <option value="nist">NIST CSF</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Audit Type</label>
+                                    <select class="field-input" id="auditType" required>
+                                        <option value="">Select Type</option>
+                                        <option value="internal">Internal Audit</option>
+                                        <option value="external">External Audit</option>
+                                        <option value="self-assessment">Self Assessment</option>
+                                        <option value="compliance">Compliance Review</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Start Date</label>
+                                    <input type="date" class="field-input" id="auditStartDate" required>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">End Date</label>
+                                    <input type="date" class="field-input" id="auditEndDate" required>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Lead Auditor</label>
+                                    <select class="field-input" id="leadAuditor" required>
+                                        <option value="">Select Auditor</option>
+                                        <option value="admin">Admin User</option>
+                                        <option value="john.doe">John Doe</option>
+                                        <option value="jane.smith">Jane Smith</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-field">
+                                <label class="field-label">Audit Scope</label>
+                                <textarea class="field-input" id="auditScope" rows="4" placeholder="Describe the audit scope, objectives, and key areas to be assessed..."></textarea>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="field-label">Description</label>
+                                <textarea class="field-input" id="auditDescription" rows="3" placeholder="Additional audit details and requirements..."></textarea>
+                            </div>
+
+                            <button type="submit" class="action-button btn-primary">
+                                <i class="bi bi-plus-circle"></i> Create Audit
+                            </button>
+                            <button type="button" class="action-button btn-warning" onclick="resetAuditForm()">
+                                <i class="bi bi-arrow-clockwise"></i> Reset
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Active Audits -->
+                    <div class="content-card">
+                        <h3 class="card-header">Current Audits</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Audit Name</th>
+                                        <th>Framework</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        <th>Lead Auditor</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="auditsList">
+                                    <tr>
+                                        <td>ISO 27001 Security Assessment</td>
+                                        <td>ISO 27001</td>
+                                        <td>Internal</td>
+                                        <td><span class="badge success">Active</span></td>
+                                        <td>75%</td>
+                                        <td>Admin User</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;" onclick="editAudit('audit1')">Edit</button>
+                                            <button class="action-button btn-warning" style="padding: 6px 12px;" onclick="viewAudit('audit1')">View</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assessments Section -->
+                <div id="assessments-section" class="content-view hidden">
+                    <h1 class="card-header">
+                        <i class="bi bi-sliders"></i> Control Assessments
+                    </h1>
+
+                    <div class="content-card">
+                        <h3 class="card-header">Assessment Workspace</h3>
+                        <div class="form-container">
+                            <div class="form-field">
+                                <label class="field-label">Select Audit</label>
+                                <select class="field-input" id="assessmentAudit" onchange="loadAssessmentControls()">
+                                    <option value="">Choose audit to assess</option>
+                                    <option value="iso-audit-1">ISO 27001 Security Assessment</option>
+                                    <option value="soc2-audit-1">SOC 2 Type II Audit</option>
+                                    <option value="nist-audit-1">NIST CSF Assessment</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Control Assessment Interface -->
+                    <div class="content-card" id="assessmentInterface" style="display: none;">
+                        <h3 class="card-header">Control: <span id="currentControlName">A.5.1.1 Information Security Policy</span></h3>
+                        
+                        <div class="form-container">
+                            <div class="form-field">
+                                <label class="field-label">Control Description</label>
+                                <p id="controlDescription" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 0;">
+                                    An information security policy shall be defined, approved by management, published and communicated to employees and relevant external parties.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-container">
+                            <div class="form-field">
+                                <label class="field-label">Implementation Status</label>
+                                <select class="field-input" id="implementationStatus">
+                                    <option value="">Select Status</option>
+                                    <option value="implemented">Fully Implemented</option>
+                                    <option value="partial">Partially Implemented</option>
+                                    <option value="planned">Planned</option>
+                                    <option value="not-applicable">Not Applicable</option>
+                                    <option value="not-implemented">Not Implemented</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label">Effectiveness Rating</label>
+                                <input type="range" class="assessment-slider" id="effectivenessRating" min="0" max="100" value="0" oninput="updateRatingDisplay(this.value)">
+                                <div style="text-align: center; margin-top: 5px;">
+                                    <strong id="ratingDisplay">0%</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="field-label">Assessment Notes</label>
+                            <textarea class="field-input" id="assessmentNotes" rows="4" placeholder="Document your assessment findings, observations, and recommendations..."></textarea>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="field-label">Evidence References</label>
+                            <input type="text" class="field-input" id="evidenceReferences" placeholder="Link evidence documents (e.g., DOC-001, POL-SEC-01)">
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-top: 25px;">
+                            <button class="action-button btn-success" onclick="saveAssessment()">
+                                <i class="bi bi-check-circle"></i> Save Assessment
+                            </button>
+                            <button class="action-button btn-primary" onclick="nextControl()">
+                                <i class="bi bi-arrow-right"></i> Next Control
+                            </button>
+                            <button class="action-button btn-warning" onclick="previousControl()">
+                                <i class="bi bi-arrow-left"></i> Previous
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Assessment Progress -->
+                    <div class="content-card">
+                        <h3 class="card-header">Assessment Progress</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Control ID</th>
+                                        <th>Control Name</th>
+                                        <th>Status</th>
+                                        <th>Rating</th>
+                                        <th>Last Updated</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assessmentProgress">
+                                    <tr>
+                                        <td>A.5.1.1</td>
+                                        <td>Information Security Policy</td>
+                                        <td><span class="badge success">Completed</span></td>
+                                        <td>85%</td>
+                                        <td>2024-08-26</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Edit</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.5.1.2</td>
+                                        <td>Review of Information Security Policy</td>
+                                        <td><span class="badge warning">In Progress</span></td>
+                                        <td>45%</td>
+                                        <td>2024-08-26</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Edit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evidence Management Section -->
+                <div id="evidence-section" class="content-view hidden">
+                    <h1 class="card-header">
+                        <i class="bi bi-folder2-open"></i> Evidence Management
+                    </h1>
+
+                    <div class="content-card">
+                        <h3 class="card-header">Upload Evidence</h3>
+                        <div class="file-upload-zone" onclick="document.getElementById('evidenceFile').click()">
+                            <i class="bi bi-cloud-upload" style="font-size: 3rem; color: #3498db; margin-bottom: 15px;"></i>
+                            <h4>Drop evidence files here or click to browse</h4>
+                            <p>Supported formats: PDF, DOC, XLSX, JPG, PNG (Max 50MB)</p>
+                            <input type="file" id="evidenceFile" style="display: none;" multiple onchange="handleEvidenceUpload(this)">
+                        </div>
+
+                        <div class="form-container">
+                            <div class="form-field">
+                                <label class="field-label">Evidence Type</label>
+                                <select class="field-input" id="evidenceType">
+                                    <option value="policy">Policy Document</option>
+                                    <option value="procedure">Procedure</option>
+                                    <option value="screenshot">Screenshot</option>
+                                    <option value="report">Report</option>
+                                    <option value="certificate">Certificate</option>
+                                    <option value="log">Log File</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label">Related Control</label>
+                                <input type="text" class="field-input" id="relatedControl" placeholder="e.g., A.5.1.1, CC6.1">
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="field-label">Evidence Description</label>
+                            <textarea class="field-input" id="evidenceDescription" rows="3" placeholder="Describe what this evidence demonstrates..."></textarea>
+                        </div>
+
+                        <button class="action-button btn-primary" onclick="uploadEvidence()">
+                            <i class="bi bi-upload"></i> Upload Evidence
+                        </button>
+                    </div>
+
+                    <!-- Evidence Library -->
+                    <div class="content-card">
+                        <h3 class="card-header">Evidence Library</h3>
+                        <div class="form-container">
+                            <div class="form-field">
+                                <input type="text" class="field-input" id="evidenceSearch" placeholder="Search evidence..." onkeyup="filterEvidence()">
+                            </div>
+                            <div class="form-field">
+                                <select class="field-input" id="evidenceFilter" onchange="filterEvidence()">
+                                    <option value="">All Types</option>
+                                    <option value="policy">Policies</option>
+                                    <option value="procedure">Procedures</option>
+                                    <option value="screenshot">Screenshots</option>
+                                    <option value="report">Reports</option>
+                                    <option value="certificate">Certificates</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Type</th>
+                                        <th>Related Control</th>
+                                        <th>Upload Date</th>
+                                        <th>Size</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="evidenceList">
+                                    <tr>
+                                        <td><i class="bi bi-file-earmark-pdf"></i> Information_Security_Policy_v2.1.pdf</td>
+                                        <td><span class="badge info">Policy</span></td>
+                                        <td>A.5.1.1</td>
+                                        <td>2024-08-25</td>
+                                        <td>2.3 MB</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Download</button>
+                                            <button class="action-button btn-danger" style="padding: 6px 12px;">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="bi bi-file-earmark-excel"></i> Access_Review_Report_Q3.xlsx</td>
+                                        <td><span class="badge success">Report</span></td>
+                                        <td>A.9.2.5</td>
+                                        <td>2024-08-24</td>
+                                        <td>1.7 MB</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Download</button>
+                                            <button class="action-button btn-danger" style="padding: 6px 12px;">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reports-section" class="content-view hidden">
+                    <h1 class="card-header">
+                        <i class="bi bi-file-earmark-pdf"></i> Audit Reports
+                    </h1>
+
+                    <div class="content-card">
+                        <h3 class="card-header">Generate Report</h3>
+                        <div class="form-container">
+                            <div class="form-field">
+                                <label class="field-label">Select Audit</label>
+                                <select class="field-input" id="reportAudit">
+                                    <option value="">Choose audit for reporting</option>
+                                    <option value="iso-audit-1">ISO 27001 Security Assessment</option>
+                                    <option value="soc2-audit-1">SOC 2 Type II Audit</option>
+                                    <option value="nist-audit-1">NIST CSF Assessment</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label">Report Type</label>
+                                <select class="field-input" id="reportType">
+                                    <option value="executive">Executive Summary</option>
+                                    <option value="detailed">Detailed Assessment Report</option>
+                                    <option value="findings">Findings Report</option>
+                                    <option value="compliance">Compliance Status Report</option>
+                                    <option value="gap-analysis">Gap Analysis</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="field-label">Report Title</label>
+                            <input type="text" class="field-input" id="reportTitle" placeholder="Enter custom report title">
+                        </div>
+
+                        <div style="margin: 25px 0;">
+                            <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <input type="checkbox" id="includeCharts" checked style="margin-right: 10px;">
+                                Include charts and graphs
+                            </label>
+                            <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <input type="checkbox" id="includeEvidence" checked style="margin-right: 10px;">
+                                Include evidence references
+                            </label>
+                            <label style="display: flex; align-items: center;">
+                                <input type="checkbox" id="includeRecommendations" checked style="margin-right: 10px;">
+                                Include recommendations
+                            </label>
+                        </div>
+
+                        <button class="action-button btn-primary" onclick="generateReport()">
+                            <i class="bi bi-file-earmark-pdf"></i> Generate PDF Report
+                        </button>
+                        <button class="action-button btn-success" onclick="previewReport()">
+                            <i class="bi bi-eye"></i> Preview Report
+                        </button>
+                    </div>
+
+                    <!-- Report Templates -->
+                    <div class="content-card">
+                        <h3 class="card-header">Report Templates</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Template Name</th>
+                                        <th>Framework</th>
+                                        <th>Type</th>
+                                        <th>Last Modified</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ISO 27001 Executive Summary</td>
+                                        <td>ISO 27001</td>
+                                        <td>Executive</td>
+                                        <td>2024-08-20</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Use Template</button>
+                                            <button class="action-button btn-warning" style="padding: 6px 12px;">Edit</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>SOC 2 Detailed Assessment</td>
+                                        <td>SOC 2</td>
+                                        <td>Detailed</td>
+                                        <td>2024-08-18</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Use Template</button>
+                                            <button class="action-button btn-warning" style="padding: 6px 12px;">Edit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Generated Reports -->
+                    <div class="content-card">
+                        <h3 class="card-header">Generated Reports</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Report Name</th>
+                                        <th>Audit</th>
+                                        <th>Type</th>
+                                        <th>Generated</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="generatedReports">
+                                    <tr>
+                                        <td>ISO_27001_Executive_Summary_Aug2024.pdf</td>
+                                        <td>ISO 27001 Security Assessment</td>
+                                        <td>Executive</td>
+                                        <td>2024-08-26</td>
+                                        <td><span class="badge success">Ready</span></td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Download</button>
+                                            <button class="action-button btn-warning" style="padding: 6px 12px;">Share</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Section -->
+                <div id="users-section" class="content-view hidden">
+                    <h1 class="card-header">
+                        <i class="bi bi-people"></i> User Management
+                    </h1>
+
+                    <div class="content-card">
+                        <h3 class="card-header">Add New User</h3>
+                        <form id="userForm">
+                            <div class="form-container">
+                                <div class="form-field">
+                                    <label class="field-label">First Name</label>
+                                    <input type="text" class="field-input" id="firstName" placeholder="Enter first name" required>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Last Name</label>
+                                    <input type="text" class="field-input" id="lastName" placeholder="Enter last name" required>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Email Address</label>
+                                    <input type="email" class="field-input" id="email" placeholder="Enter email address" required>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Role</label>
+                                    <select class="field-input" id="userRole" required>
+                                        <option value="">Select Role</option>
+                                        <option value="admin">Administrator</option>
+                                        <option value="lead-auditor">Lead Auditor</option>
+                                        <option value="auditor">Auditor</option>
+                                        <option value="reviewer">Reviewer</option>
+                                        <option value="viewer">Viewer</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Department</label>
+                                    <input type="text" class="field-input" id="department" placeholder="Enter department">
+                                </div>
+                                <div class="form-field">
+                                    <label class="field-label">Phone Number</label>
+                                    <input type="tel" class="field-input" id="phoneNumber" placeholder="Enter phone number">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="action-button btn-primary">
+                                <i class="bi bi-person-plus"></i> Add User
+                            </button>
+                            <button type="button" class="action-button btn-success" onclick="sendInvitation()">
+                                <i class="bi bi-envelope"></i> Send Invitation
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- User List -->
+                    <div class="content-card">
+                        <h3 class="card-header">Current Users</h3>
+                        <div class="form-container">
+                            <div class="form-field">
+                                <input type="text" class="field-input" id="userSearch" placeholder="Search users..." onkeyup="filterUsers()">
+                            </div>
+                            <div class="form-field">
+                                <select class="field-input" id="roleFilter" onchange="filterUsers()">
+                                    <option value="">All Roles</option>
+                                    <option value="admin">Administrator</option>
+                                    <option value="lead-auditor">Lead Auditor</option>
+                                    <option value="auditor">Auditor</option>
+                                    <option value="reviewer">Reviewer</option>
+                                    <option value="viewer">Viewer</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Department</th>
+                                        <th>Status</th>
+                                        <th>Last Login</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersList">
+                                    <tr>
+                                        <td>Admin User</td>
+                                        <td>admin@company.com</td>
+                                        <td><span class="badge danger">Administrator</span></td>
+                                        <td>IT Security</td>
+                                        <td><span class="badge success">Active</span></td>
+                                        <td>2024-08-26 14:30</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Edit</button>
+                                            <button class="action-button btn-warning" style="padding: 6px 12px;">Reset Password</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>John Doe</td>
+                                        <td>john.doe@company.com</td>
+                                        <td><span class="badge info">Lead Auditor</span></td>
+                                        <td>Internal Audit</td>
+                                        <td><span class="badge success">Active</span></td>
+                                        <td>2024-08-25 16:45</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Edit</button>
+                                            <button class="action-button btn-warning" style="padding: 6px 12px;">Reset Password</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jane Smith</td>
+                                        <td>jane.smith@company.com</td>
+                                        <td><span class="badge success">Auditor</span></td>
+                                        <td>Compliance</td>
+                                        <td><span class="badge warning">Pending</span></td>
+                                        <td>Never</td>
+                                        <td>
+                                            <button class="action-button btn-primary" style="padding: 6px 12px;">Edit</button>
+                                            <button class="action-button btn-success" style="padding: 6px 12px;">Activate</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentUser = null;
+        let currentSection = 'dashboard';
+        let assessmentData = {};
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Check if user is logged in
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+                initializeDashboard();
+            } else {
+                showLoginScreen();
+            }
+        }
+
+        // Authentication Functions
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'admin123') {
+                currentUser = {
+                    username: 'admin',
+                    name: 'Admin User',
+                    role: 'Administrator'
+                };
+                
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showMainApp();
+                initializeDashboard();
+                showNotification('Login successful! Welcome to IT Audit Management Platform v4.1', 'success');
+            } else {
+                showNotification('Invalid credentials. Please use admin/admin123', 'error');
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            showLoginScreen();
+            showNotification('You have been logged out successfully', 'success');
+        }
+
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('currentUser').textContent = currentUser.name;
+        }
+
+        // Navigation Functions
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-view');
+            sections.forEach(section => section.classList.add('hidden'));
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+            
+            // Update active nav item
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentSection = sectionName;
+            
+            // Initialize section-specific functionality
+            if (sectionName === 'dashboard') {
+                initializeDashboard();
+            } else if (sectionName === 'assessments') {
+                initializeAssessments();
+            }
+        }
+
+        // Dashboard Functions
+        function initializeDashboard() {
+            // Initialize compliance chart
+            const ctx = document.getElementById('complianceChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Compliant', 'Partially Compliant', 'Non-Compliant'],
+                        datasets: [{
+                            data: [65, 25, 10],
+                            backgroundColor: ['#27ae60', '#f39c12', '#e74c3c']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Framework Management Functions
+        function handleFrameworkUpload(input) {
+            if (input.files && input.files.length > 0) {
+                const file = input.files[0];
+                showNotification(`Framework file "${file.name}" selected for upload`, 'success');
+            }
+        }
+
+        function processFramework() {
+            const frameworkType = document.getElementById('frameworkType').value;
+            const frameworkName = document.getElementById('frameworkName').value;
+            
+            if (!frameworkName) {
+                showNotification('Please enter a framework name', 'error');
+                return;
+            }
+            
+            // Simulate processing
+            showNotification('Processing framework... This may take a moment.', 'warning');
+            
+            setTimeout(() => {
+                showNotification(`Framework "${frameworkName}" processed successfully! Added 114 controls.`, 'success');
+                document.getElementById('frameworkName').value = '';
+            }, 2000);
+        }
+
+        function downloadSampleFramework() {
+            showNotification('Sample framework template downloaded', 'success');
+        }
+
+        // Audit Management Functions
+        document.getElementById('auditForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const auditName = document.getElementById('auditName').value;
+            const framework = document.getElementById('auditFramework').value;
+            
+            if (!auditName || !framework) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            showNotification(`Audit "${auditName}" created successfully!`, 'success');
+            resetAuditForm();
+        });
+
+        function resetAuditForm() {
+            document.getElementById('auditForm').reset();
+        }
+
+        function editAudit(auditId) {
+            showNotification('Opening audit editor...', 'success');
+        }
+
+        function viewAudit(auditId) {
+            showNotification('Opening audit details...', 'success');
+        }
+
+        // Assessment Functions
+        function initializeAssessments() {
+            document.getElementById('assessmentInterface').style.display = 'none';
+        }
+
+        function loadAssessmentControls() {
+            const auditSelect = document.getElementById('assessmentAudit');
+            if (auditSelect.value) {
+                document.getElementById('assessmentInterface').style.display = 'block';
+                showNotification('Loaded controls for assessment', 'success');
+            }
+        }
+
+        function updateRatingDisplay(value) {
+            document.getElementById('ratingDisplay').textContent = value + '%';
+        }
+
+        function saveAssessment() {
+            const status = document.getElementById('implementationStatus').value;
+            const rating = document.getElementById('effectivenessRating').value;
+            const notes = document.getElementById('assessmentNotes').value;
+            
+            if (!status) {
+                showNotification('Please select an implementation status', 'error');
+                return;
+            }
+            
+            showNotification('Assessment saved successfully!', 'success');
+        }
+
+        function nextControl() {
+            showNotification('Loading next control...', 'success');
+        }
+
+        function previousControl() {
+            showNotification('Loading previous control...', 'success');
+        }
+
+        // Evidence Management Functions
+        function handleEvidenceUpload(input) {
+            if (input.files && input.files.length > 0) {
+                const files = Array.from(input.files);
+                showNotification(`${files.length} evidence file(s) selected for upload`, 'success');
+            }
+        }
+
+        function uploadEvidence() {
+            const description = document.getElementById('evidenceDescription').value;
+            const control = document.getElementById('relatedControl').value;
+            
+            if (!description || !control) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            showNotification('Evidence uploaded successfully!', 'success');
+            document.getElementById('evidenceDescription').value = '';
+            document.getElementById('relatedControl').value = '';
+        }
+
+        function filterEvidence() {
+            showNotification('Filtering evidence...', 'success');
+        }
+
+        // Report Generation Functions
+        function generateReport() {
+            const auditSelect = document.getElementById('reportAudit').value;
+            const reportType = document.getElementById('reportType').value;
+            
+            if (!auditSelect) {
+                showNotification('Please select an audit for reporting', 'error');
+                return;
+            }
+            
+            showNotification('Generating PDF report... This may take a moment.', 'warning');
+            
+            setTimeout(() => {
+                showNotification('PDF report generated successfully!', 'success');
+            }, 2000);
+        }
+
+        function previewReport() {
+            showNotification('Opening report preview...', 'success');
+        }
+
+        // User Management Functions
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const role = document.getElementById('userRole').value;
+            
+            if (!firstName || !lastName || !email || !role) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            showNotification(`User "${firstName} ${lastName}" added successfully!`, 'success');
+            document.getElementById('userForm').reset();
+        });
+
+        function sendInvitation() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                showNotification('Please enter an email address', 'error');
+                return;
+            }
+            
+            showNotification('Invitation email sent successfully!', 'success');
+        }
+
+        function filterUsers() {
+            showNotification('Filtering users...', 'success');
+        }
+
+        // Utility Functions
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Set today's date as default for audit dates
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const endDate = new Date();
+            endDate.setMonth(endDate.getMonth() + 3);
+            const end = endDate.toISOString().split('T')[0];
+            
+            document.getElementById('auditStartDate').value = today;
+            document.getElementById('auditEndDate').value = end;
+        }
+
+        // Initialize default dates when audit section is shown
+        function initializeAuditDates() {
+            setDefaultDates();
+        }
+
+        // Initialize sample data
+        function initializeSampleData() {
+            // This would normally load from a database
+            console.log('Sample data initialized');
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSampleData();
+        });
+    </script>
+</body>
+</html>
